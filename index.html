@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #F2F2F2;
+    }
+
+    #container {
+      width: 100%;
+      max-width: 640px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #captureCanvas {
+      width: 100%; /* Adjust as needed */
+      border: 1px solid black;
+    }
+
+    textarea {
+      width: 100%;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <canvas id="captureCanvas"></canvas>
+    <textarea id="textInput" placeholder="Type something..."></textarea>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const video = document.createElement('video');
+      const canvas = document.getElementById('captureCanvas');
+      const context = canvas.getContext('2d');
+      const textInput = document.getElementById('textInput');
+
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(stream) {
+          video.srcObject = stream;
+          video.play();
+          video.addEventListener('loadedmetadata', () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            captureFrame();  // Initial frame capture
+          });
+        })
+        .catch(function(error) {
+          console.error("Error accessing the webcam: ", error);
+        });
+
+      function captureFrame() {
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      }
+
+      textInput.addEventListener('input', captureFrame);
+    });
+  </script>
+</body>
+</html>
+
+
